@@ -9,6 +9,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import static africa.semicolon.remApp.utils.AppUtils.ONE;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 @SpringBootTest
 public class CustomerServiceTest {
 
@@ -26,16 +29,18 @@ public class CustomerServiceTest {
         registerRequest.setPassword("password");
         employeeRegisterResponse = new EmployeeRegisterResponse();
         makeRequestForm = new MakeRequestForm();
-
     }
     @Test
     public void testThatEmployeeCanRegister() throws EmployeeRegistrationFailedException {
         employeeRegisterResponse = employeeService.register(registerRequest);
+        assertThat(employeeRegisterResponse).isNotNull();
+        assertThat(employeeRegisterResponse.getId()).isEqualTo(ONE);
     }
 
     @Test
     public void testThatEmployeeCanMakeRequest() {
         employeeService.makeRequest(makeRequestForm);
+
 
     }
 
