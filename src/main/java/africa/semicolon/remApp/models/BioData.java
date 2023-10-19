@@ -6,6 +6,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
+@ToString
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,6 +19,5 @@ public class BioData {
     @Column(unique = true)
     private String officeEmailAddress;
 
-    @Column(unique = true)
     private String password;
 }

@@ -17,9 +17,11 @@ public class Admin {
     private String firstName;
     private String lastName;
     private String officeLocation;
-    private String offlineLine;
+    private String officeEmailAddress;
+    private String password;
     private String position;
     private String profilePicture;
+    private String officeLine;
     private LocalDateTime timeCreated;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

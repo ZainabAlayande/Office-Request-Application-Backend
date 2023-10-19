@@ -1,0 +1,24 @@
+  <style>
+              button{
+                  background-color: rgb(38, 38, 192);
+                  color: white;
+                  height: 50px;
+                  width: 100px;
+                  border-radius: 25px;
+                  border: none;
+                  box-shadow: 0cap 35px 0 black;
+                  cursor: pointer;
+                  font-weight: 700;
+              }
+  </style>
+
+<p>
+      Congratulations
+      kindly login below to complete your registration.
+      </br>
+      <a href="%s">
+          <button>
+              LOGIN
+          </button>
+      </a>
+</p>

@@ -8,11 +8,11 @@ import africa.semicolon.remApp.dtos.responses.LoginResponse;
 import africa.semicolon.remApp.dtos.responses.MakeRequestResponse;
 import africa.semicolon.remApp.dtos.responses.ViewRequestResponse;
 import africa.semicolon.remApp.exceptions.EmployeeRegistrationFailedException;
+import africa.semicolon.remApp.exceptions.remaException;
 
 public interface EmployeeService {
 
-    EmployeeRegisterResponse register(RegisterRequest registerRequest) throws EmployeeRegistrationFailedException;
+    EmployeeRegisterResponse register(RegisterRequest registerRequest) throws remaException;
     LoginResponse login(LoginRequest loginRequest);
-    MakeRequestResponse makeRequest(MakeRequestForm makeRequestForm);
-    ViewRequestResponse viewRequest();
+
 }

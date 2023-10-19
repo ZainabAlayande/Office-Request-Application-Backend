@@ -1,6 +1,8 @@
 package africa.semicolon.remApp.models;
 
 public enum RequestStatus {
-
-    UNASSIGNED, ASSIGNED, DECLINED, COMPLETED
+    UNASSIGNED,
+    DECLINED,
+    ASSIGNED,
+    COMPLETED
 }
