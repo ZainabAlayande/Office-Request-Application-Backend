@@ -6,9 +6,10 @@ import lombok.Setter;
 @Setter
 @Getter
 public class MakeRequestForm {
-    private String officeEmailAddress;
-    private String requesterName;
-    private String who;
+
+    private String emailAddress;
+    private String name;
+    private String body;
     private String title;
     private String description;
 

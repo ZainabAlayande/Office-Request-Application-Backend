@@ -8,6 +8,7 @@ public class EmailUtils {
     public static final String APP_NAME = "orm app";
     public static final String APP_EMAIL = "noreply@orma.com";
     public static final String ACTIVATION_LINK_VALUE = "Activation Link";
+    public static final String PENDING_REQUEST = "Pending Request";
     public static final String ACTIVATE_ACCOUNT_URL = "localhost:8080/api/v1/employee/register";
     public static final String MAIL_TEMPLATE_LOCATION = "C:\\Users\\ADMIN\\IdeaProjects\\remApp\\src\\main\\resources\\static\\activation.txt";
     public static final String TO = "to";

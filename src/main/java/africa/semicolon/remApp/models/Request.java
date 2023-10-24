@@ -17,9 +17,14 @@ public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String requesterName;
+    private String name;
+    private String userId;
+    private String emailAddress;
     private String title;
     private String description;
+    private String body;
     private LocalDateTime timeRequested;
-    private RequestStatus requestStatus;
+    private RequestStatus status;
+
+
 }

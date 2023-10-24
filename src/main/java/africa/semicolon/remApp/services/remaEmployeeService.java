@@ -1,6 +1,7 @@
 package africa.semicolon.remApp.services;
 
 import africa.semicolon.remApp.dtos.requests.*;
+import africa.semicolon.remApp.dtos.responses.ApiResponse;
 import africa.semicolon.remApp.dtos.responses.EmployeeRegisterResponse;
 import africa.semicolon.remApp.dtos.responses.LoginResponse;
 import africa.semicolon.remApp.exceptions.EmployeeRegistrationFailedException;
@@ -19,6 +20,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import static africa.semicolon.remApp.utils.AcceptedResponseUtils.EMPLOYEE_REGISTRATION_SUCCESSFUL;
@@ -48,6 +50,18 @@ public class remaEmployeeService implements EmployeeService{
         return buildEmployeeResponse(savedEmployee.getId());
     }
 
+    @Override
+    public Optional<Employee> findUserById(String userId) {
+        if (employeeRepository.existsById(Long.valueOf(userId))) {
+            Optional<Employee> employee = employeeRepository
+                    .findById(Long.valueOf(userId));
+            return employee;
+        } else {
+            return Optional.empty();
+        }
+    }
+
+
     private static EmployeeRegisterResponse buildEmployeeResponse(Long employeeId) {
         EmployeeRegisterResponse employeeRegisterResponse = new EmployeeRegisterResponse();
         employeeRegisterResponse.setMessage(EMPLOYEE_REGISTRATION_SUCCESSFUL);
@@ -57,7 +71,7 @@ public class remaEmployeeService implements EmployeeService{
 
     private EmailNotificationRequest buildEmailRequest(Employee employee) throws remaException {
         System.out.println("employee -> " + employee.toString());
-        System.out.println("build email request");
+        System.out.println("build template request");
         String token = JWT.create()
                 .withIssuedAt(Instant.now())
                 .withExpiresAt(Instant.now().plusSeconds(60L))
@@ -85,10 +99,7 @@ public class remaEmployeeService implements EmployeeService{
         }
     }
 
-    @Override
-    public LoginResponse login(LoginRequest loginRequest) {
-        return null;
-    }
+
 
 
 

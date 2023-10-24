@@ -4,13 +4,12 @@ import africa.semicolon.remApp.dtos.requests.AdminLoginRequest;
 import africa.semicolon.remApp.dtos.requests.AdminRegisterRequest;
 import africa.semicolon.remApp.dtos.responses.AdminLoginResponse;
 import africa.semicolon.remApp.dtos.responses.AdminRegisterResponse;
-import africa.semicolon.remApp.dtos.responses.PendingRequestResponse;
+import africa.semicolon.remApp.dtos.responses.ApiResponse;
 import africa.semicolon.remApp.models.Admin;
 import africa.semicolon.remApp.models.BioData;
 import africa.semicolon.remApp.repositories.AdminRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -44,9 +43,8 @@ public class remaAdminService implements AdminService{
     }
 
     @Override
-    public List<PendingRequestResponse> viewPendingRequest() {
-        List<PendingRequestResponse> pendingRequestResponses = requestService.buildPendingRequest();
-        return pendingRequestResponses;
+    public ApiResponse<?> viewPendingRequest() {
+        return null;
     }
 
     @Override

@@ -7,4 +7,5 @@ import lombok.Setter;
 @Setter
 public class MakeRequestResponse {
     private String message;
+    private boolean status;
 }

@@ -26,20 +26,20 @@ public class MakeRequestTest {
         makeRequestFormTwo = new MakeRequestForm();
         makeRequestFormTwo.setTitle("Computer");
         makeRequestFormTwo.setDescription("The computer you brought is bad");
-        makeRequestFormTwo.setRequesterName("Oseni Chike");
-        makeRequestForm.setOfficeEmailAddress("osenichike@gmail.com");
+        makeRequestFormTwo.setName("Oseni Chike");
+        makeRequestForm.setEmailAddress("osenichike@gmail.com");
         makeRequestResponseTwo = new MakeRequestResponse();
 
         makeRequestResponse = new MakeRequestResponse();
         makeRequestForm.setTitle("Mac Book");
         makeRequestForm.setDescription("My intern needs mac book");
-        makeRequestForm.setRequesterName("Zainab Blessed");
-        makeRequestForm.setOfficeEmailAddress("emailAddress@email.com");
+        makeRequestForm.setName("Zainab Blessed");
+        makeRequestForm.setEmailAddress("emailAddress@template.com");
     }
     @Test
     public void testThatEmployeeCanMakeRequest() {
-       makeRequestResponse = requestService.makeRequest(makeRequestForm);
-       makeRequestResponseTwo = requestService.makeRequest(makeRequestFormTwo);
+       makeRequestResponse = requestService.makeRequest("", makeRequestForm);
+       makeRequestResponseTwo = requestService.makeRequest("", makeRequestFormTwo);
        assertThat(makeRequestResponse).isNotNull();
        assertThat(makeRequestResponseTwo).isNotNull();
     }
