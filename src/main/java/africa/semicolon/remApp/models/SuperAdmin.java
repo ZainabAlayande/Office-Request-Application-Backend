@@ -1,39 +1,34 @@
 package africa.semicolon.remApp.models;
 
 import africa.semicolon.remApp.enums.Role;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.*;
-
-
-
-@Setter
 @Getter
-@Entity
-@ToString
+@Setter
 @Builder
+@ToString
+@Entity
+@NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
-public class Employee {
+public class SuperAdmin {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     private String firstName;
     private String lastName;
+    private String email;
     private String password;
     private String officeLocation;
     private String officeLine;
     private String position;
     private String profilePicture;
     private LocalDateTime timeCreated;
-
     private List<Role> roles = new ArrayList<>();
-
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private BioData bioData;
 }

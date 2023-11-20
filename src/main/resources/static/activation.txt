@@ -13,12 +13,12 @@
   </style>
 
 <p>
-      Congratulations
-      kindly login below to complete your registration.
-      </br>
+      Hi, Congratulations..........Welcome to REMA </br>
+      kindly click the link below to complete your registration.
+      </br></br>
       <a href="%s">
           <button>
-              LOGIN
+              COMPLETE REGISTRATION
           </button>
       </a>
 </p>

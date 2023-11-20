@@ -17,7 +17,7 @@ public class BioData {
     private Long id;
 
     @Column(unique = true)
+    @NonNull
     private String officeEmailAddress;
 
-    private String password;
 }

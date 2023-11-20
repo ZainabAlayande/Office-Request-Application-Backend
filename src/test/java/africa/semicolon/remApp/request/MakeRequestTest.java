@@ -1,8 +1,8 @@
-package africa.semicolon.remApp.user;
+package africa.semicolon.remApp.request;
 
 import africa.semicolon.remApp.dtos.requests.MakeRequestForm;
 import africa.semicolon.remApp.dtos.responses.MakeRequestResponse;
-import africa.semicolon.remApp.services.RequestService;
+import africa.semicolon.remApp.services.request.RequestService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package africa.semicolon.remApp.services;
+package africa.semicolon.remApp.services.request;
 
 import africa.semicolon.remApp.dtos.requests.EmailNotificationRequest;
 import africa.semicolon.remApp.dtos.requests.MakeRequestForm;
@@ -13,6 +13,7 @@ import africa.semicolon.remApp.models.Employee;
 import africa.semicolon.remApp.models.Request;
 import africa.semicolon.remApp.models.RequestStatus;
 import africa.semicolon.remApp.repositories.RequestRepository;
+import africa.semicolon.remApp.services.employee.EmployeeService;
 import africa.semicolon.remApp.services.notification.MailService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,7 @@ import static africa.semicolon.remApp.utils.EmailUtils.*;
 @AllArgsConstructor
 @Slf4j
 public class remaRequestService implements RequestService {
+
     private final RequestRepository requestRepository;
     private final ModelMapper modelMapper;
     private final MailService mailService;

@@ -1,4 +1,4 @@
-package africa.semicolon.remApp.services;
+package africa.semicolon.remApp.services.request;
 
 import africa.semicolon.remApp.dtos.requests.MakeRequestForm;
 import africa.semicolon.remApp.dtos.responses.MakeRequestResponse;
@@ -15,4 +15,9 @@ public interface RequestService {
     ApiResponse<?> viewAllAssignedRequest(String userId);
     ApiResponse<?> viewAllDeclinedRequest(String userId);
     ApiResponse<?> viewAllCompletedRequest(String userId);
+
+//    ApiResponse<?> viewAllCompletedRequest();
+//    ApiResponse<?> viewAllPendingRequest();
+//    ApiResponse<?> viewAllAssignedRequest();
+//    ApiResponse<?> viewAllDeclinedRequest();
 }

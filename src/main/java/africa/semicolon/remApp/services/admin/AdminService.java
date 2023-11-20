@@ -1,4 +1,4 @@
-package africa.semicolon.remApp.services;
+package africa.semicolon.remApp.services.admin;
 
 import africa.semicolon.remApp.dtos.requests.AdminLoginRequest;
 import africa.semicolon.remApp.dtos.requests.AdminRegisterRequest;
@@ -11,7 +11,6 @@ import java.util.List;
 public interface AdminService {
 
     AdminRegisterResponse register(AdminRegisterRequest adminRegisterRequest);
-    AdminLoginResponse login(AdminLoginRequest adminLoginRequest);
 
     ApiResponse<?> viewPendingRequest();
     void assignedRequest();

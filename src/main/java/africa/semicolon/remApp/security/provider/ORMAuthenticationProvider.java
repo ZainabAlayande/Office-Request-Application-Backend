@@ -1,5 +1,6 @@
 package africa.semicolon.remApp.security.provider;
 
+import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -8,12 +9,15 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 
+@AllArgsConstructor
+@Component
 public class ORMAuthenticationProvider implements AuthenticationProvider {
 
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
 
     @Override

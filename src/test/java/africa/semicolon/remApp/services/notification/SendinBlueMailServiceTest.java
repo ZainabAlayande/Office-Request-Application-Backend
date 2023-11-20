@@ -30,4 +30,5 @@ public class SendinBlueMailServiceTest {
         var response = mailService.sendMail(emailNotificationRequest);
         assertThat(response).isNotNull();
     }
+
 }

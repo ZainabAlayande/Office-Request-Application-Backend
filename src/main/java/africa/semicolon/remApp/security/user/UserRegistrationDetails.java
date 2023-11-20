@@ -7,11 +7,13 @@ import africa.semicolon.remApp.repositories.EmployeeRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserRegistrationDetails implements UserDetailsService {
 
-    private EmployeeRepository employeeRepository;
-    private BioDataRepository bioDataRepository;
+    private final EmployeeRepository employeeRepository;
+    private final BioDataRepository bioDataRepository;
 
     public UserRegistrationDetails (EmployeeRepository employeeRepository, BioDataRepository bioDataRepository) {
         this.employeeRepository = employeeRepository;

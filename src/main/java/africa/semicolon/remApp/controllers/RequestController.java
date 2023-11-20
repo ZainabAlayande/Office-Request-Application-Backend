@@ -1,9 +1,7 @@
 package africa.semicolon.remApp.controllers;
 
 import africa.semicolon.remApp.dtos.requests.MakeRequestForm;
-import africa.semicolon.remApp.dtos.requests.RegisterRequest;
-import africa.semicolon.remApp.exceptions.remaException;
-import africa.semicolon.remApp.services.RequestService;
+import africa.semicolon.remApp.services.request.RequestService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

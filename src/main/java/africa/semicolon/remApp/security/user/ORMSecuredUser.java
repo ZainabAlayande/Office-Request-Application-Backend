@@ -5,14 +5,16 @@ import africa.semicolon.remApp.models.Employee;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@Component
 public class ORMSecuredUser implements UserDetails {
 
-    private Employee employee;
+    private final Employee employee = new Employee();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
