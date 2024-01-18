@@ -15,4 +15,7 @@ public interface EmployeeService {
     ApiResponse<?> completeRegistration(String token, CompleteRegistrationRequest request) throws REMAException, UnsupportedEncodingException;
 
     Optional<Employee> findUserById(String userId);
+
+    Employee findEmployeeByEmail(String username) throws REMAException;
+
 }

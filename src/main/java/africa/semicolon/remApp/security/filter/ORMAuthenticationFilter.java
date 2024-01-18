@@ -52,6 +52,8 @@ public class ORMAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             loginRequest = objectMapper.readValue(request.getInputStream(), LoginRequest.class);
             email = loginRequest.getEmail();
             password = loginRequest.getPassword();
+            System.out.println("email -> "+ email);
+            System.out.println("password " + password);
             Authentication authentication = new UsernamePasswordAuthenticationToken(email, password);
             Authentication authenticationResult = authenticationManager.authenticate(authentication);
             SecurityContextHolder.getContext().setAuthentication(authenticationResult);

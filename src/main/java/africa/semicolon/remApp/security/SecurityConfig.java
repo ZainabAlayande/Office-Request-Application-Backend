@@ -29,13 +29,13 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         UsernamePasswordAuthenticationFilter authenticationFilter = new ORMAuthenticationFilter(objectMapper,authenticationManager,jwtUtil);
         ORMAuthorizationFilter authorizationFilter = new ORMAuthorizationFilter(jwtUtil);
-
+        System.out.println("Coming out");
         return httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(authorizationFilter, ORMAuthenticationFilter.class)
                 .addFilterAt(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .authorizeHttpRequests(endpoint -> endpoint.requestMatchers("/api/v1/employee/register").permitAll())
+                .authorizeHttpRequests(endpoint -> endpoint.requestMatchers("/api/v1/employee/register", "/api/v1/register").permitAll())
                 .authorizeHttpRequests(endpoint -> endpoint.requestMatchers("/api/v1/employee/complete-registration").hasAuthority("FRESH_USER"))
                 .build();
     }

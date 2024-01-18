@@ -15,12 +15,9 @@ public class ORMAuthenticationManager implements AuthenticationManager {
 
     private final AuthenticationProvider authenticationProvider;
 
-//    public ORMAuthenticationManager(AuthenticationProvider authenticationProvider) {
-//        this.authenticationProvider = authenticationProvider;
-//    }
-
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+        System.out.println("Insider authentication manager");
         Authentication authenticationResult = null;
         if (authenticationProvider.supports(authentication.getClass())) {
             if (authenticationProvider.supports(authentication.getClass())) {

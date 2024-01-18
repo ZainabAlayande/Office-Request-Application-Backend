@@ -31,28 +31,33 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 public class ORMAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
-//    private int order;
 
     public ORMAuthorizationFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
-//        this.order = order;
-//        setOrder(order);
     }
-
-//    private void setOrder(int order) {
-//        this.order = order;
-//    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         System.out.println("1 authorization");
+//        boolean isUnAuthorizedPath = EndPointsConstant.UNAUTHORIZED_ENDPOINTS.contains(request.getServletPath()) &&
+//                request.getMethod().equals(HttpMethod.POST.name());
         boolean isUnAuthorizedPath = EndPointsConstant.UNAUTHORIZED_ENDPOINTS.contains(request.getServletPath()) &&
                 request.getMethod().equals(HttpMethod.POST.name());
 
+//        String servletPath = request.getRequestURI().substring(request.getContextPath().length());
+//
+//        boolean isUnAuthorizedPath = EndPointsConstant.UNAUTHORIZED_ENDPOINTS.contains(servletPath) &&
+//                request.getMethod().equals(HttpMethod.POST.name());
+
+//        System.out.println("Servlet path - " + servletPath);
         System.out.println(isUnAuthorizedPath);
         System.out.println(request.getServletPath());
 
-        if (isUnAuthorizedPath) filterChain.doFilter(request, response);
+        if (isUnAuthorizedPath) {
+            System.out.println("Request for an unauthorized endpoint. Allowing access.");
+            filterChain.doFilter(request, response);
+            System.out.println("Filter chain executed successfully.");
+        }
         else  {
             try {
                 authorizeRequest(request, response, filterChain);

@@ -7,30 +7,40 @@ import africa.semicolon.remApp.models.Company;
 import africa.semicolon.remApp.models.SuperAdmin;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
 
+@AllArgsConstructor
 public class SuperAdminUtils {
 
-    public static Company buildCompanyInformation(CompanyRegistrationRequest request) {
+    private final PasswordEncoder passwordEncoder;
+
+
+
+    public Company buildCompanyInformation(CompanyRegistrationRequest request) {
         Company company = new Company();
         company.setCompanyEmail(request.getCompanyEmail());
         company.setCompanySize(request.getCompanySize());
         company.setCompanyName(request.getCompanyName());
-        company.setCompanyPassword(request.getCompanyPassword());
+        company.setCompanyPassword(passwordEncoder.encode(request.getCompanyPassword()));
         company.setCompanyUniqueID(companyUniqueID(request.getCompanyName()));
+        company.setTimeCreated(LocalDateTime.now());
         return company;
     }
 
-    public static SuperAdmin buildSuperAdminInformation(CompanyRegistrationRequest request) {
+    public SuperAdmin buildSuperAdminInformation(CompanyRegistrationRequest request, String companyId) {
         SuperAdmin superAdmin = new SuperAdmin();
         superAdmin.setEmail(request.getCompanyEmail());
         superAdmin.setFirstName(request.getSuperAdminFirstName());
         superAdmin.setLastName(request.getSuperAdminLastName());
-        superAdmin.setPassword(request.getSuperAdminPassword());
+        superAdmin.setPassword(passwordEncoder.encode(request.getSuperAdminPassword()));
+        superAdmin.setCompanyId(companyId);
         superAdmin.setTimeCreated(LocalDateTime.now());
         superAdmin.setRoles(List.of(Role.SUPER_ADMIN));
         return superAdmin;

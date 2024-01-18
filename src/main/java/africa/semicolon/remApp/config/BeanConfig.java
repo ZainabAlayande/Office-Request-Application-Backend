@@ -4,6 +4,7 @@ import africa.semicolon.remApp.repositories.BioDataRepository;
 import africa.semicolon.remApp.repositories.EmployeeRepository;
 import africa.semicolon.remApp.security.JwtUtil;
 import africa.semicolon.remApp.services.employee.REMAEmployeeUtils;
+import africa.semicolon.remApp.services.superAdmin.SuperAdminUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -19,8 +20,6 @@ public class BeanConfig {
 
     @Autowired
     private BioDataRepository bioDataRepository;
-
-    private JwtUtil jwtUtil;
 
     @Bean
     public ModelMapper modelMapper() {
@@ -38,8 +37,15 @@ public class BeanConfig {
     }
 
     @Bean
-    public REMAEmployeeUtils employeeUtils() {
-      return new REMAEmployeeUtils(employeeRepository,bioDataRepository, jwtUtil());
+    public SuperAdminUtils superAdminUtils(PasswordEncoder passwordEncoder) {
+        return new SuperAdminUtils(passwordEncoder);
+    }
+
+    @Bean
+    public REMAEmployeeUtils employeeUtils(EmployeeRepository employeeRepository,
+                                           BioDataRepository bioDataRepository,
+                                           JwtUtil jwtUtil) {
+        return new REMAEmployeeUtils(employeeRepository, bioDataRepository, jwtUtil);
     }
 
 }

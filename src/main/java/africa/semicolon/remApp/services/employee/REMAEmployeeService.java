@@ -103,9 +103,12 @@ public class REMAEmployeeService implements EmployeeService{
         }
     }
 
-
-
-
+    @Override
+    public Employee findEmployeeByEmail(String email) throws REMAException {
+        BioData bioData = new BioData();
+        bioData.setOfficeEmailAddress(email);
+        return employeeRepository.findByBioData(bioData).orElseThrow(() -> new REMAException("Employee not found"));
+    }
 
 
 }
