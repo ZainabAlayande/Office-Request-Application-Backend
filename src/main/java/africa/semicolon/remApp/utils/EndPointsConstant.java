@@ -4,5 +4,6 @@ import java.util.List;
 
 public class EndPointsConstant {
 
-    public static List<String> UNAUTHORIZED_ENDPOINTS = List.of("/login", "/api/v1/employee/register", "/api/v1/register");
+    public static final List<String> UNAUTHORIZED_ENDPOINTS = List.of("/api/v1/employee/register", "/api/v1/register", "/login");
+
 }

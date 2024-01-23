@@ -1,6 +1,7 @@
 package africa.semicolon.remApp.services.employee;
 
 import africa.semicolon.remApp.dtos.requests.CompleteRegistrationRequest;
+import africa.semicolon.remApp.dtos.requests.EmployeeRegistrationRequest;
 import africa.semicolon.remApp.dtos.responses.*;
 import africa.semicolon.remApp.exceptions.REMAException;
 import africa.semicolon.remApp.models.Employee;
@@ -11,8 +12,7 @@ import java.util.Optional;
 
 public interface EmployeeService {
 
-    ApiResponse<?> registration(@NonNull String email) throws REMAException;
-    ApiResponse<?> completeRegistration(String token, CompleteRegistrationRequest request) throws REMAException, UnsupportedEncodingException;
+    ApiResponse<?> registration(EmployeeRegistrationRequest request) throws REMAException;
 
     Optional<Employee> findUserById(String userId);
 

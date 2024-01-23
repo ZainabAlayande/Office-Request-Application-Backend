@@ -32,17 +32,17 @@ public class ORMAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        System.out.println("Inside authentication provider");
         Authentication authenticationResult;
         String email = authentication.getPrincipal().toString();
         String password = authentication.getCredentials().toString();
         authenticationResult = authenticateIfAuthenticationIsACompany(email, password);
         System.out.println("auth result -> " + authenticationResult);
-//        if (authenticationResult == null) {
-//            authenticationResult = authenticateIfAuthenticationIsAMember(email, password);
-//        }
+        if (authenticationResult == null) {
+            authenticationResult = authenticateIfAuthenticationIsAMember(email, password);
+        }
         return authenticationResult;
     }
+
 
     private Authentication authenticateIfAuthenticationIsAMember(String principal, String password) {
         Authentication authenticationResult;
@@ -51,9 +51,10 @@ public class ORMAuthenticationProvider implements AuthenticationProvider {
         if (!(userDetails == null)) {
             String memberUsername = userDetails.getUsername();
             String memberPassword = userDetails.getPassword();
+            Collection<? extends  GrantedAuthority>  authorities = userDetails.getAuthorities();
             if (!memberUsername.isEmpty()) {
                 if (passwordEncoder.matches(password, memberPassword)) {
-                    authenticationResult = new UsernamePasswordAuthenticationToken(memberUsername, memberPassword);
+                    authenticationResult = new UsernamePasswordAuthenticationToken(memberUsername, memberPassword, authorities);
                     return authenticationResult;
                 }
             }
@@ -65,33 +66,13 @@ public class ORMAuthenticationProvider implements AuthenticationProvider {
         Authentication authenticationResult;
         CompanyDetailsService companyDetailsService = new CompanyDetailsService(companyService);
         UserDetails userDetails = companyDetailsService.loadUserByUsername(principal);
-        System.out.println("user details -> " + userDetails.toString());
-        System.out.println("user details username -> " + userDetails.getUsername());
-        System.out.println("user details password -> " + userDetails.getPassword());
         if(userDetails != null) {
-            System.out.println("1");
             String companyEmail = userDetails.getUsername();
             String companyPassword = userDetails.getPassword();
 
-            System.out.println();
-            System.out.println("password 1 -> " + password);
-            System.out.println("password 1 -> " + companyPassword);
-
-            if (passwordEncoder instanceof BCryptPasswordEncoder) {
-                System.out.println("Using BCryptPasswordEncoder");
-            } else {
-                System.out.println("Using a different PasswordEncoder");
-            }
-
-
-            System.out.println();
-            System.out.println("2");
             if (!(companyEmail == null)){
-                System.out.println("3");
                 if(passwordEncoder.matches(password, companyPassword)){
-                    System.out.println("4");
                     authenticationResult = new UsernamePasswordAuthenticationToken(companyEmail, companyPassword);
-                    System.out.println("5");
                     return authenticationResult;
                 }
             }}

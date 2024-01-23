@@ -39,4 +39,5 @@ public class SecurityConfig {
                 .authorizeHttpRequests(endpoint -> endpoint.requestMatchers("/api/v1/employee/complete-registration").hasAuthority("FRESH_USER"))
                 .build();
     }
+
 }

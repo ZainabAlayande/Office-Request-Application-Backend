@@ -26,6 +26,7 @@ public class Employee {
     private String firstName;
     private String lastName;
     private String password;
+    private String email;
     private String officeLocation;
     private String officeLine;
     private String position;
@@ -34,6 +35,6 @@ public class Employee {
 
     private List<Role> roles = new ArrayList<>();
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private BioData bioData;
+//    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//    private BioData bioData;
 }

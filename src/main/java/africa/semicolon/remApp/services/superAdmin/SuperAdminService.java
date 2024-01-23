@@ -5,5 +5,5 @@ import africa.semicolon.remApp.dtos.responses.ApiResponse;
 
 public interface SuperAdminService {
 
-    public ApiResponse<?> companyRegistration(CompanyRegistrationRequest request);
+//    public ApiResponse<?> companyRegistration(CompanyRegistrationRequest request);
 }

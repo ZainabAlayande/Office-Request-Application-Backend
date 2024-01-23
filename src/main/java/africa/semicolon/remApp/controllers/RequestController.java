@@ -20,7 +20,7 @@ public class RequestController {
 
     @RequestMapping(
             method = RequestMethod.POST,
-            value = "/v1/request/request-form",
+            value = "/v1/request/form",
             produces = {MediaType.APPLICATION_JSON_VALUE}
     )
     public ResponseEntity<?> request(@RequestBody MakeRequestForm requestForm) {
@@ -31,7 +31,7 @@ public class RequestController {
 
     @RequestMapping(
             method = RequestMethod.GET,
-            value = "/v1/request/view-all-assigned-request",
+            value = "/v1/request/all-assigned-request",
             produces = {MediaType.APPLICATION_JSON_VALUE}
     )
     public ResponseEntity<?> viewAllAssignedRequest()  {

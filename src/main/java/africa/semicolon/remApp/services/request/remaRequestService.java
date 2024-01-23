@@ -1,16 +1,13 @@
 package africa.semicolon.remApp.services.request;
 
-import africa.semicolon.remApp.dtos.requests.EmailNotificationRequest;
-import africa.semicolon.remApp.dtos.requests.MakeRequestForm;
-import africa.semicolon.remApp.dtos.requests.Recipient;
-import africa.semicolon.remApp.dtos.requests.Sender;
+import africa.semicolon.remApp.dtos.requests.*;
 import africa.semicolon.remApp.dtos.responses.MakeRequestResponse;
 import africa.semicolon.remApp.dtos.responses.ApiResponse;
 import africa.semicolon.remApp.dtos.responses.ViewRequestResponse;
 import africa.semicolon.remApp.exception.ORMException;
 import africa.semicolon.remApp.models.BioData;
 import africa.semicolon.remApp.models.Employee;
-import africa.semicolon.remApp.models.Request;
+import africa.semicolon.remApp.models.Requests;
 import africa.semicolon.remApp.models.RequestStatus;
 import africa.semicolon.remApp.repositories.RequestRepository;
 import africa.semicolon.remApp.services.employee.EmployeeService;
@@ -43,7 +40,7 @@ public class remaRequestService implements RequestService {
     public MakeRequestResponse makeRequest(String userId, MakeRequestForm makeRequestForm) {
         Optional<Employee> employee = employeeService.findUserById(userId);
         Employee validatedEmployee = validateEmployeeById(employee);
-        Request mappedRequest = modelMapper.map(makeRequestForm, Request.class);
+        Requests mappedRequest = modelMapper.map(makeRequestForm, Requests.class);
         mappedRequest.setStatus(RequestStatus.UNASSIGNED);
         mappedRequest.setTimeRequested(LocalDateTime.now());
         mappedRequest.setUserId(userId);
@@ -65,8 +62,7 @@ public class remaRequestService implements RequestService {
     }
 
     private EmailNotificationRequest buildEmailRequest(Employee employee) {
-        BioData bioData = employee.getBioData();
-        String email = bioData.getOfficeEmailAddress();
+        String email = employee.getEmail();
         String firstName = employee.getFirstName();
         EmailNotificationRequest request = new EmailNotificationRequest();
         Sender sender = new Sender(APP_NAME, APP_EMAIL);
@@ -90,9 +86,9 @@ public class remaRequestService implements RequestService {
     public List<ViewRequestResponse> viewAllRequestByUserId(String userId) {
         var allRequest = requestRepository.findAll();
         List<ViewRequestResponse> responseList = new ArrayList<>();
-        Request foundRequest = new Request();
+        Requests foundRequest = new Requests();
 
-        for (Request request: allRequest) {
+        for (Requests request: allRequest) {
             if (request.getUserId().equals(userId)) {
                 ViewRequestResponse response = convertRequestToResponse(request);
                 responseList.add(response);
@@ -108,9 +104,9 @@ public class remaRequestService implements RequestService {
 
     @Override
     public ApiResponse<?> viewAllPendingRequest(String userId) {
-        List<Request> allRequest = requestRepository.findByUserId(userId);
-        List<Request> response = new ArrayList<>();
-        for (Request request: allRequest) {
+        List<Requests> allRequest = requestRepository.findByUserId(userId);
+        List<Requests> response = new ArrayList<>();
+        for (Requests request: allRequest) {
             if (request.getStatus().equals(RequestStatus.UNASSIGNED)) {
                 response.add(request);
             } else {
@@ -123,9 +119,9 @@ public class remaRequestService implements RequestService {
 
     @Override
     public ApiResponse<?> viewAllAssignedRequest(String userId) {
-        List<Request> allRequest = requestRepository.findByUserId(userId);
-        List<Request> response = new ArrayList<>();
-        for (Request request: allRequest) {
+        List<Requests> allRequest = requestRepository.findByUserId(userId);
+        List<Requests> response = new ArrayList<>();
+        for (Requests request: allRequest) {
             if (request.getStatus().equals(RequestStatus.ASSIGNED)) {
                 response.add(request);
             } else {
@@ -137,9 +133,9 @@ public class remaRequestService implements RequestService {
 
     @Override
     public ApiResponse<?> viewAllDeclinedRequest(String userId) {
-        List<Request> allRequest = requestRepository.findByUserId(userId);
-        List<Request> response = new ArrayList<>();
-        for (Request request: allRequest) {
+        List<Requests> allRequest = requestRepository.findByUserId(userId);
+        List<Requests> response = new ArrayList<>();
+        for (Requests request: allRequest) {
             if (request.getStatus().equals(RequestStatus.DECLINED)) {
                 response.add(request);
             } else {
@@ -151,9 +147,9 @@ public class remaRequestService implements RequestService {
 
     @Override
     public ApiResponse<?> viewAllCompletedRequest(String userId) {
-        List<Request> allRequest = requestRepository.findByUserId(userId);
-        List<Request> response = new ArrayList<>();
-        for (Request request: allRequest) {
+        List<Requests> allRequest = requestRepository.findByUserId(userId);
+        List<Requests> response = new ArrayList<>();
+        for (Requests request: allRequest) {
             if (request.getStatus().equals(RequestStatus.COMPLETED)) {
                 response.add(request);
             } else {
@@ -163,7 +159,62 @@ public class remaRequestService implements RequestService {
         return ApiResponse.builder().status(true).message("Completed request").data(response).build();
     }
 
-    private ViewRequestResponse convertRequestToResponse(Request request) {
+    @Override
+    public List<Requests> findAllPendingRequestByCompanyId(String companyId) {
+        List<Requests> allRequest = requestRepository.findAllByCompanyId(companyId);
+        List<Requests> pendingRequest = new ArrayList<>();
+        for (Requests request: allRequest) {
+            if (request.getStatus().equals(RequestStatus.UNASSIGNED)) {
+                pendingRequest.add(request);
+            }
+        }
+        return pendingRequest;
+    }
+
+    @Override
+    public List<Requests> findAllAssignedRequestByCompanyId(String companyId) {
+        List<Requests> allRequest = requestRepository.findAllByCompanyId(companyId);
+        List<Requests> assignedRequest = new ArrayList<>();
+        for (Requests request: allRequest) {
+            if (request.getStatus().equals(RequestStatus.ASSIGNED)) {
+                assignedRequest.add(request);
+            }
+        }
+        return assignedRequest;
+    }
+
+    @Override
+    public List<Requests> findAllAprrovedRequestByCompanyId(String companyId) {
+        List<Requests> allRequest = requestRepository.findAllByCompanyId(companyId);
+        List<Requests> approvedRequest = new ArrayList<>();
+        for (Requests request: allRequest) {
+            if (request.getStatus().equals(RequestStatus.COMPLETED)) {
+                approvedRequest.add(request);
+            }
+        }
+        return approvedRequest;
+    }
+
+    @Override
+    public List<Requests> findAllDeclinedRequestByCompanyId(String companyId) {
+        List<Requests> allRequest = requestRepository.findAllByCompanyId(companyId);
+        List<Requests> declinedRequest = new ArrayList<>();
+        for (Requests request: allRequest) {
+            if (request.getStatus().equals(RequestStatus.DECLINED)) {
+                declinedRequest.add(request);
+            }
+        }
+        return declinedRequest;
+    }
+
+//    @Override
+//    public ApiResponse<?> getAllRequestCountByCompanyId(String companyId) {
+//        requestRepository.findAllRequestCount(companyId);
+//       RequestCount count = RequestCount.builder().countOfDeclinedRequest("").countOfAssignedRequest("").countOfApprovedRequest("").countOfPendingRequest("").build();
+//        return ApiResponse.builder().data(count).status(true).message("Count of Requests Fetched Successfully").build();
+//    }
+
+    private ViewRequestResponse convertRequestToResponse(Requests request) {
         ViewRequestResponse response = new ViewRequestResponse();
         response.setBody(request.getBody());
         response.setStatus(request.getStatus().toString());

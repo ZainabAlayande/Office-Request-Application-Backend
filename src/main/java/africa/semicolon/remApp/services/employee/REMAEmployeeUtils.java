@@ -7,24 +7,15 @@ import africa.semicolon.remApp.dtos.responses.CompleteRegistrationResponse;
 import africa.semicolon.remApp.dtos.responses.EmployeeRegisterResponse;
 import africa.semicolon.remApp.enums.Role;
 import africa.semicolon.remApp.exceptions.REMAException;
-import africa.semicolon.remApp.models.BioData;
 import africa.semicolon.remApp.models.Employee;
 import africa.semicolon.remApp.repositories.BioDataRepository;
 import africa.semicolon.remApp.repositories.EmployeeRepository;
 import africa.semicolon.remApp.security.JwtUtil;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.time.Instant;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -63,19 +54,15 @@ public class REMAEmployeeUtils {
         if (bioDataRepository.existsByOfficeEmailAddress(email)) {
             throw new REMAException("Email exist........please login");
         } else {
-            BioData bioData = new BioData();
-            bioData.setOfficeEmailAddress(email);
-            Employee employee = new Employee();
-            employee.setBioData(bioData);
-            String token = jwtUtil.generateAccessToken(employee, Role.FRESH_USER);
+
             EmailNotificationRequest request = new EmailNotificationRequest();
             Sender sender = new Sender(APP_NAME, APP_EMAIL);
             Recipient recipient = new Recipient(email,"empty");
             request.setEmailSender(sender);
             request.setRecipient(Set.of(recipient));
-            request.setSubject(ACTIVATION_LINK_VALUE);
+            request.setSubject("Registration Successful");
             String template = getEmailTemplate();
-            request.setContent(String.format(template, ACTIVATE_ACCOUNT_URL+"?"+token));
+            request.setContent(String.format(template));
             return request;
         }
     }
@@ -85,8 +72,12 @@ public class REMAEmployeeUtils {
                     new BufferedReader(new FileReader(MAIL_TEMPLATE_LOCATION))) {
             return bufferedReader.lines().collect(Collectors.joining());
         } catch (IOException exception) {
-            throw new REMAException("Failed to send registration link");
+            throw new REMAException("Failed to send mail");
         }
+    }
+
+    protected static void validateEmail(String email) {
+
     }
 
 }

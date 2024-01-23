@@ -24,7 +24,7 @@ public class SuperAdminController {
             produces = {MediaType.APPLICATION_JSON_VALUE}
     )
     public ResponseEntity<?> companyRegistration(@RequestBody CompanyRegistrationRequest request)  {
-        var response = superAdminService.companyRegistration(request);
+        var response = superAdminService.toString();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

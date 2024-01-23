@@ -12,11 +12,12 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @Entity
-public class Request {
+public class Requests {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    private String companyId;
     private String name;
     private String userId;
     private String emailAddress;
@@ -25,6 +26,7 @@ public class Request {
     private String body;
     private LocalDateTime timeRequested;
     private RequestStatus status;
+    private String requestCount;
 
 
 }

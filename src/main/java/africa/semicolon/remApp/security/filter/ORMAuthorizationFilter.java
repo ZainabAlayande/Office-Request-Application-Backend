@@ -38,25 +38,11 @@ public class ORMAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        System.out.println("1 authorization");
-//        boolean isUnAuthorizedPath = EndPointsConstant.UNAUTHORIZED_ENDPOINTS.contains(request.getServletPath()) &&
-//                request.getMethod().equals(HttpMethod.POST.name());
         boolean isUnAuthorizedPath = EndPointsConstant.UNAUTHORIZED_ENDPOINTS.contains(request.getServletPath()) &&
                 request.getMethod().equals(HttpMethod.POST.name());
 
-//        String servletPath = request.getRequestURI().substring(request.getContextPath().length());
-//
-//        boolean isUnAuthorizedPath = EndPointsConstant.UNAUTHORIZED_ENDPOINTS.contains(servletPath) &&
-//                request.getMethod().equals(HttpMethod.POST.name());
-
-//        System.out.println("Servlet path - " + servletPath);
-        System.out.println(isUnAuthorizedPath);
-        System.out.println(request.getServletPath());
-
         if (isUnAuthorizedPath) {
-            System.out.println("Request for an unauthorized endpoint. Allowing access.");
             filterChain.doFilter(request, response);
-            System.out.println("Filter chain executed successfully.");
         }
         else  {
             try {
@@ -68,20 +54,15 @@ public class ORMAuthorizationFilter extends OncePerRequestFilter {
     }
 
     private void authorizeRequest(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        System.out.println("2 authorization");
         authorize(request);
         filterChain.doFilter(request, response);
     }
 
     private void authorize(HttpServletRequest request) throws UnsupportedEncodingException {
-        System.out.println("3 authorization");
         String authorizationHeader = request.getHeader(AUTHORIZATION);
         System.out.println("authorizationHeader - " + authorizationHeader);
-        System.out.println("sub 1");
         String tokenPrefix = "Bearer ";
-        System.out.println("sub 2");
         boolean isValidToken = authorizationHeader != null && authorizationHeader.startsWith(tokenPrefix);
-        System.out.println("sub 3");
         if (isValidToken) {
             String token = authorizationHeader.substring(tokenPrefix.length());
             authorizeToken(token);
@@ -89,7 +70,6 @@ public class ORMAuthorizationFilter extends OncePerRequestFilter {
     }
 
     private void authorizeToken(String token) throws UnsupportedEncodingException {
-        System.out.println("4 authorization");
         Map<String, Claim> map = jwtUtil.extractClaimsFromToken(token);
         List<SimpleGrantedAuthority> grantedAuthorities = new ArrayList<>();
         Claim roles = map.get("Roles");

@@ -1,11 +1,15 @@
 package africa.semicolon.remApp.security.user;
 
+import africa.semicolon.remApp.enums.Role;
 import africa.semicolon.remApp.models.Employee;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @AllArgsConstructor
 public class EmployeeDetails implements UserDetails {
@@ -14,7 +18,11 @@ public class EmployeeDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        for (Role role: employee.getRoles()) {
+            authorities.add(new SimpleGrantedAuthority(role.name()));
+        }
+        return authorities;
     }
 
     @Override
@@ -24,7 +32,7 @@ public class EmployeeDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return employee.getBioData().getOfficeEmailAddress();
+        return employee.getEmail();
     }
 
     @Override

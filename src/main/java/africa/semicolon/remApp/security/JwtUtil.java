@@ -1,7 +1,6 @@
 package africa.semicolon.remApp.security;
 
 import africa.semicolon.remApp.enums.Role;
-import africa.semicolon.remApp.models.BioData;
 import africa.semicolon.remApp.models.Employee;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import java.io.UnsupportedEncodingException;
 import java.time.Instant;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static africa.semicolon.remApp.utils.AppUtils.JWT_SECRET;
@@ -23,9 +21,8 @@ public class JwtUtil {
     @Value(JWT_SECRET)
     private String secret;
 
-    public String generateAccessToken(Employee employee, Role role) {
-       BioData bioData = employee.getBioData();
-       String email = bioData.getOfficeEmailAddress();
+    public String generateAccessTokenAfterLogin(Employee employee, Role role) {
+       String email = employee.getEmail();
 
         var listOfCurrentRoles = employee.getRoles();
         listOfCurrentRoles.add(role);
@@ -39,6 +36,12 @@ public class JwtUtil {
         return JWT.create().withIssuedAt(Instant.now()).withExpiresAt(Instant.now().plusSeconds(86000L))
                 .withClaim("id", employee.getId())
                 .withClaim("Roles", map)
+                .withClaim("email", email)
+                .sign(Algorithm.HMAC512(secret.getBytes()));
+    }
+
+    public String generateAccessTokenAfterLogin(String email) {
+        return JWT.create().withIssuedAt(Instant.now()).withExpiresAt(Instant.now().plusSeconds(86000L))
                 .withClaim("email", email)
                 .sign(Algorithm.HMAC512(secret.getBytes()));
     }
