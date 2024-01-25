@@ -16,7 +16,7 @@ public class CompanyServiceTest {
     @Autowired
     private CompanyService companyService;
 
-    private CompanyRegistrationRequest companyRegistrationRequest;
+    private CompanyRegistrationRequest companyRegistrationRequest = new CompanyRegistrationRequest();
 
     @BeforeEach
     public void setUp() {
@@ -25,18 +25,16 @@ public class CompanyServiceTest {
         companyRegistrationRequest.setCompanySize("2000");
         companyRegistrationRequest.setCompanyPassword("Coopera");
         companyRegistrationRequest.setSuperAdminEmail("admin@gmail.com");
-        companyRegistrationRequest.setSuperAdminLastName("Admin");
-        companyRegistrationRequest.setSuperAdminFirstName("Admin");
-        companyRegistrationRequest.setSuperAdminPassword("");
-        companyRegistrationRequest.setCompanyEmail("");
-
+        companyRegistrationRequest.setSuperAdminLastName("Last Name");
+        companyRegistrationRequest.setSuperAdminFirstName("First Name");
+        companyRegistrationRequest.setSuperAdminPassword("Password");
     }
 
     @Test
     public void registerCompany() {
         ApiResponse<?> response = companyService.register(companyRegistrationRequest);
         assertThat(response).isNotNull();
-        assertThat(response.getMessage()).isEqualTo("");
+        assertThat(response.getMessage()).isEqualTo("Successful");
     }
 
     @Test

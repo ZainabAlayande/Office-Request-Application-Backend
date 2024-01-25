@@ -13,17 +13,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 
+@RequestMapping("/api/v1/employee")
 @RestController
 @AllArgsConstructor
 public class EmployeeController {
 
     private final EmployeeService employeeService;
 
-    @RequestMapping(
-            method = RequestMethod.POST,
-            value = "api/v1/employee/register",
-            produces = {MediaType.APPLICATION_JSON_VALUE}
-    )
+    @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody EmployeeRegistrationRequest request) throws REMAException {
         var response = employeeService.registration(request);
         return ResponseEntity.status(HttpStatus.OK).body(response);

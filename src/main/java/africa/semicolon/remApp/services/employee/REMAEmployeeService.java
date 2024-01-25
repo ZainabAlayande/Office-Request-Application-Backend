@@ -17,6 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,13 +41,14 @@ public class REMAEmployeeService implements EmployeeService{
     private final MailService mailService;
     private final ModelMapper modelMapper;
     private final JwtUtil jwtUtil;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
     public ApiResponse<?> registration(EmployeeRegistrationRequest request) throws REMAException {
         validateEmail(request.getEmail());
         Employee employee = Employee.builder().lastName(request.getLastName()).firstName(request.getFirstName())
-                .email(request.getEmail()).password(request.getPassword()).roles(List.of(Role.EMPLOYEE)).timeCreated(LocalDateTime.now()).build();
+                .email(request.getEmail()).password(passwordEncoder.encode(request.getPassword())).roles(List.of(Role.EMPLOYEE)).timeCreated(LocalDateTime.now()).build();
 
         Employee savedEmployee = employeeRepository.save(employee);
 //        EmailNotificationRequest emailNotificationRequest = employeeUtils.buildEmailRequest(request.getEmail());

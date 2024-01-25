@@ -19,9 +19,6 @@ public class CompanyDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<Company> foundCompany =  companyService.findCompanyByEmail(username);
-        Company company = foundCompany.orElseThrow(() -> new BadCredentialsException("Bad credentials"));
-        UserDetails userDetails = new CompanyDetails(company);
-        return userDetails;
-
+        return foundCompany.map(CompanyDetails::new).orElse(null);
     }
 }
