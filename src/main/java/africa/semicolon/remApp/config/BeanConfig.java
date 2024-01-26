@@ -3,6 +3,7 @@ package africa.semicolon.remApp.config;
 import africa.semicolon.remApp.repositories.BioDataRepository;
 import africa.semicolon.remApp.repositories.EmployeeRepository;
 import africa.semicolon.remApp.security.JwtUtil;
+import africa.semicolon.remApp.services.company.CompanyUtils;
 import africa.semicolon.remApp.services.employee.REMAEmployeeUtils;
 import africa.semicolon.remApp.services.superAdmin.SuperAdminUtils;
 import org.modelmapper.ModelMapper;
@@ -34,6 +35,11 @@ public class BeanConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public CompanyUtils companyUtils(PasswordEncoder passwordEncoder) {
+        return new CompanyUtils(passwordEncoder);
     }
 
     @Bean

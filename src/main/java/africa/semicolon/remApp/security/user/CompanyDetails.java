@@ -19,12 +19,12 @@ public class CompanyDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return company.getCompanyPassword();
+        return company.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return company.getCompanyEmail();
+        return company.getEmail();
     }
 
     @Override

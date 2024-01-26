@@ -20,10 +20,10 @@ public class CompanyServiceTest {
 
     @BeforeEach
     public void setUp() {
-        companyRegistrationRequest.setCompanyEmail("coopera@gmail.com");
-        companyRegistrationRequest.setCompanyName("Coopera");
-        companyRegistrationRequest.setCompanySize("2000");
-        companyRegistrationRequest.setCompanyPassword("Coopera");
+        companyRegistrationRequest.setEmail("coopera@gmail.com");
+        companyRegistrationRequest.setName("Coopera");
+        companyRegistrationRequest.setConfirmPassword("2000");
+        companyRegistrationRequest.setPassword("Coopera");
         companyRegistrationRequest.setSuperAdminEmail("admin@gmail.com");
         companyRegistrationRequest.setSuperAdminLastName("Last Name");
         companyRegistrationRequest.setSuperAdminFirstName("First Name");

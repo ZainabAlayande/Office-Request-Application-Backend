@@ -10,13 +10,10 @@ import lombok.*;
 @ToString
 public class CompanyRegistrationRequest {
 
-    private String companyName;
-    private String companyEmail;
-    private String companyPassword;
-    private String companySize;
+    private String name;
+    private String email;
+    private String password;
+    private String confirmPassword;
 
-    private String superAdminFirstName;
-    private String superAdminLastName;
-    private String superAdminEmail;
-    private String superAdminPassword;
+
 }
