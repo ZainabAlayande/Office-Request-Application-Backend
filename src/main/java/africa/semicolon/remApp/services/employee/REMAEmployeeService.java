@@ -61,7 +61,6 @@ public class REMAEmployeeService implements EmployeeService{
     }
 
 
-
     @Override
     public Optional<Employee> findUserById(String userId) {
         if (employeeRepository.existsById(Long.valueOf(userId))) {
@@ -80,6 +79,10 @@ public class REMAEmployeeService implements EmployeeService{
         return employeeRepository.findByEmail(email).orElseThrow(() -> new REMAException("Employee not found"));
     }
 
+    @Override
+    public void save(Employee employee) {
+        employeeRepository.save(employee);
+    }
 
 
 //    @Override

@@ -31,6 +31,7 @@ public class Employee {
     private String officeLine;
     private String position;
     private String profilePicture;
+    private String inviteStatus;
     private LocalDateTime timeCreated;
 
     private List<Role> roles = new ArrayList<>();

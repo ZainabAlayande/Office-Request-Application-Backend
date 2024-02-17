@@ -21,6 +21,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -57,7 +58,7 @@ public class ORMAuthorizationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private void authorize(HttpServletRequest request) throws UnsupportedEncodingException {
+    private void authorize(HttpServletRequest request) {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
         System.out.println("authorizationHeader - " + authorizationHeader);
         String tokenPrefix = "Bearer ";
@@ -68,24 +69,29 @@ public class ORMAuthorizationFilter extends OncePerRequestFilter {
         }
     }
 
-    private void authorizeToken(String token) throws UnsupportedEncodingException {
+    private void authorizeToken(String token) {
         Map<String, Claim> map = jwtUtil.extractClaimsFromToken(token);
         List<SimpleGrantedAuthority> grantedAuthorities = new ArrayList<>();
-        Claim roles = map.get("Roles");
-        Claim userId = map.get("userId");
+        Claim roles = map.get("roles");
+        Claim uniqueID = map.get("uniqueID");
         Claim email = map.get("email");
         addClaimToUserAuthorities(grantedAuthorities, roles);
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userId, email, grantedAuthorities);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(uniqueID, null, grantedAuthorities);
+        System.out.println(authentication);
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        System.out.println("Principal => " + SecurityContextHolder.getContext().getAuthentication().getPrincipal());
     }
 
     private void addClaimToUserAuthorities(List<SimpleGrantedAuthority> grantedAuthorities, Claim roles) {
-        System.out.println("5 authorization");
-        for (int i = 0; i < roles.asMap().size(); i++) {
-            String role = (String) roles.asMap().get("role" + (i + 1));
+        System.out.println("roles in add claim to user authorities -> " + roles); // roles -> ["ADMIN"]
+        List<String> roleList = roles.asList(String.class);
+        System.out.println("check");
+        for (String role : roleList) {
             if (role != null) {
+                System.out.println("The role -> " + role);
                 grantedAuthorities.add(new SimpleGrantedAuthority(role));
             }
         }
+        System.out.println(Arrays.toString(grantedAuthorities.toArray()));
     }
 }

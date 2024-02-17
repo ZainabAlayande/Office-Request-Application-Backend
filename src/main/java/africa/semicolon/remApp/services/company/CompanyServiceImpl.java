@@ -11,6 +11,7 @@ import africa.semicolon.remApp.services.superAdmin.SuperAdminUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -26,17 +27,25 @@ public class CompanyServiceImpl implements CompanyService{
     private CompanyUtils companyUtils;
 
     @Override
+    @Transactional
     public ApiResponse<?> register(CompanyRegistrationRequest request) {
         Company mappedCompany = companyUtils.buildCompanyInformation(request);
-        companyRepository.save(mappedCompany);
-        String token = generateToken(mappedCompany.getUniqueID());
+        System.out.println("Mapped Company => " + mappedCompany);
+        // add mail service
+        var anything = companyRepository.save(mappedCompany);
         CompanyRegistrationResponse response = buildCompanyRegistrationResponse(mappedCompany);
-        response.setToken(token);
-        return ApiResponse.builder().message("Successful").status(true).data(response).build();
+        return ApiResponse.builder().message("Successful").theEnum(anything.getRoles().toString()).status(true).data(response).build();
     }
 
     @Override
     public Optional<Company> findCompanyByEmail(String username) {
         return companyRepository.findByEmail(username);
+    }
+
+    @Override
+    public Company findByUniqueID(String uniqueId) {
+        String replaceId = uniqueId.replaceAll("\"", "");
+        System.out.println("Uni => " + replaceId);
+        return companyRepository.findByUniqueID(replaceId);
     }
 }

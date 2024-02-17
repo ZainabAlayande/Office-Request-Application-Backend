@@ -19,7 +19,6 @@ public class CompanyController {
 
     @PostMapping("/register")
     public ResponseEntity<?> companyRegistration(@RequestBody CompanyRegistrationRequest request) {
-        System.out.println("333");
         var response = companyService.register(request);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

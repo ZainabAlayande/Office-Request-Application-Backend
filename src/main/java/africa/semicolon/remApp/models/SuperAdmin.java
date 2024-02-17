@@ -34,5 +34,5 @@ public class SuperAdmin {
     private String position;
     private String profilePicture;
     private LocalDateTime timeCreated;
-    private List<Role> roles = new ArrayList<>();
+
 }

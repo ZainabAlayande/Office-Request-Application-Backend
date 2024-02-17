@@ -8,11 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,13 +20,16 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
 
+    private Authentication authentication;
+
     @RequestMapping(
             method = RequestMethod.POST,
-            value = "api/v1/member/link",
+            value = "/api/v1/generate-link",
             produces = {MediaType.APPLICATION_JSON_VALUE}
     )
-    public ResponseEntity<?> adminRegistration(@RequestBody List<String> email)  {
-        var response = adminService.generateInviteLinkForMember(email);
+    public ResponseEntity<?> generateLink(@RequestHeader ("Authorization") String token, @RequestBody List<String> email)  {
+        System.out.println("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
+        var response = adminService.generateInviteLinkForMember(token, email, authentication);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

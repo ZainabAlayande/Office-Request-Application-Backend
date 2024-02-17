@@ -36,6 +36,7 @@ public class SecurityConfig {
                 .addFilterAt(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(endpoint -> endpoint.requestMatchers("/api/v1/employee/register", "/api/v1/company/register").permitAll())
                 .authorizeHttpRequests(endpoint -> endpoint.requestMatchers("/api/v1/employee/complete-registration").hasAuthority("FRESH_USER"))
+                .authorizeHttpRequests(endpoint -> endpoint.requestMatchers("/api/v1/generate-link").hasAuthority("ADMIN"))
                 .build();
     }
 

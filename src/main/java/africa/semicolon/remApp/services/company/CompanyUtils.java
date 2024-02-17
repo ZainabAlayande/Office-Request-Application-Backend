@@ -2,6 +2,7 @@ package africa.semicolon.remApp.services.company;
 
 import africa.semicolon.remApp.dtos.requests.CompanyRegistrationRequest;
 import africa.semicolon.remApp.dtos.responses.CompanyRegistrationResponse;
+import africa.semicolon.remApp.enums.Role;
 import africa.semicolon.remApp.models.Company;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -10,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Random;
 
 @AllArgsConstructor
@@ -25,6 +27,7 @@ public class CompanyUtils {
         company.setName(request.getName());
         company.setPassword(passwordEncoder.encode(request.getPassword()));
         company.setUniqueID(companyUniqueID(request.getName()));
+        company.setRoles(List.of(Role.ADMIN));
         company.setTimeCreated(LocalDateTime.now());
         return company;
     }

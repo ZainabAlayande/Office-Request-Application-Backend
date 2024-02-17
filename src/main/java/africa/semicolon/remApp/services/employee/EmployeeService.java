@@ -18,4 +18,6 @@ public interface EmployeeService {
 
     Employee findEmployeeByEmail(String username) throws REMAException;
 
+    void save(Employee employee);
+
 }

@@ -11,4 +11,5 @@ import lombok.*;
 public class InvitationLinkResponse {
 
     private String message;
+    private String status;
 }

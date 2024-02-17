@@ -14,3 +14,11 @@ public class MakeRequestForm {
     private String description;
 
 }
+
+/*
+ * item
+ * quantity
+ * purpose
+ * due date
+ * additional information
+ * */

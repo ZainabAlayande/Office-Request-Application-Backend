@@ -37,16 +37,11 @@ public class ORMAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         System.out.println("auth boss");
         Authentication authenticationResult = null;
-        System.out.println("authentication res -> " + authenticationResult);
         String email = authentication.getPrincipal().toString();
         String password = authentication.getCredentials().toString();
-        System.out.println("auth object -> " + authentication);
-        System.out.println("email -> " + email);
-        System.out.println("password -> " + password);
         authenticationResult = authenticateIfAuthenticationIsACompany(email, password);
         System.out.println("auth result -> " + authenticationResult);
         if (authenticationResult == null) {
-            System.out.println("more description");
                 authenticationResult = authenticateIfAuthenticationIsAMember(email, password);
         }
         return authenticationResult;

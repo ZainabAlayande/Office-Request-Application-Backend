@@ -1,9 +1,12 @@
 package africa.semicolon.remApp.models;
 
+import africa.semicolon.remApp.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Setter
 @Getter
@@ -23,8 +26,7 @@ public class Admin {
     private String profilePicture;
     private String officeLine;
     private LocalDateTime timeCreated;
+    private List<Role> roles = new ArrayList<>();
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private BioData bioData;
 
 }

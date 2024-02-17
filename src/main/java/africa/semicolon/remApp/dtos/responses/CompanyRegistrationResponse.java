@@ -12,13 +12,13 @@ public class CompanyRegistrationResponse {
 
     private String companyName;
     private String companyEmail;
-    private String companyPassword;
-    private String companySize;
+//    private String companyPassword;
+//    private String companySize;
     private String companyUniqueID;
-    private String token;
-
-    private String superAdminFirstName;
-    private String superAdminLastName;
-    private String superAdminEmail;
+//    private String token;
+//
+//    private String superAdminFirstName;
+//    private String superAdminLastName;
+//    private String superAdminEmail;
 
 }

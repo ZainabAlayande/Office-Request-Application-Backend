@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 public class ApiResponse<T> {
 
     private String message;
+    private String theEnum;
     private boolean status;
     private T data;
 
