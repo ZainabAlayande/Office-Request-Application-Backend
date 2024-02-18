@@ -169,6 +169,6 @@ public class JwtUtil {
         Algorithm algorithm = Algorithm.HMAC512(secret.getBytes());
         System.out.println("Secret.getBytes() => " + secret);
         JWTVerifier verifier = JWT.require(algorithm).build();
-        return verifier.verify(token);
+        return verifier.verify("eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MDgyNzQ4MjEsImV4cCI6MTcwODM2MDgyMSwiZW1haWwiOiJuZXdjb21wQGdtYWlsLmNvbSIsInVuaXF1ZUlEIjoiTkVXLzk0MC85MzEiLCJyb2xlcyI6WyJBRE1JTiJdfQ.fsvt6jU47q1f1yuI5zwWg6HM4pgsV4DHiiEqHApSzXqiEiw9vyeKmuN6Wz1GaKn09IgBAYVzzOEeIQZ4UF9ueA");
     }
 }

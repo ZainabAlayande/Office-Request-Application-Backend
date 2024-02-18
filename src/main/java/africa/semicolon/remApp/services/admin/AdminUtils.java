@@ -22,11 +22,18 @@ public class AdminUtils {
     private static final Pattern pattern = Pattern.compile(EMAIL_REGEX_PATTERN);
 
     public static void validateEmailAddressList(List<String> email) {
+        System.out.println("Emails -> " + email);
+        System.out.println(email.size());
         List<String> invalidEmails = new ArrayList<>();
         for (String singleEmail : email) {
-            Matcher matcher = pattern.matcher(singleEmail);
-                if (!matcher.matches()) invalidEmails.add(singleEmail);
+            System.out.println("Single Email => " + singleEmail);
+            Matcher matcher = pattern.matcher(singleEmail.trim());
+                if (!matcher.matches()) {
+                    System.out.println("Invalid emails => " + invalidEmails);
+                    invalidEmails.add(singleEmail);
+                }
         }
+        System.out.println(">>>>>>>>> " + invalidEmails);
 
         if (!invalidEmails.isEmpty()) {
             throw new ORMException("Invalid Email Address: " + String.join(", ", invalidEmails));
