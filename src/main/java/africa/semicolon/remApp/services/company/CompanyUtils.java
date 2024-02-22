@@ -2,8 +2,11 @@ package africa.semicolon.remApp.services.company;
 
 import africa.semicolon.remApp.dtos.requests.CompanyRegistrationRequest;
 import africa.semicolon.remApp.dtos.responses.CompanyRegistrationResponse;
+import africa.semicolon.remApp.dtos.responses.EmployeeListResponse;
+import africa.semicolon.remApp.enums.MemberInviteStatus;
 import africa.semicolon.remApp.enums.Role;
 import africa.semicolon.remApp.models.Company;
+import africa.semicolon.remApp.models.Employee;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import lombok.AllArgsConstructor;
@@ -11,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -63,10 +67,27 @@ public class CompanyUtils {
         else throw new RuntimeException("Invalid.........");
     }
 
+
+    public static List<EmployeeListResponse> mapEmployeeToEmployeeResponse(List<Employee> employee) {
+        List<EmployeeListResponse> responseList = new ArrayList<>();
+        EmployeeListResponse response = new EmployeeListResponse();
+        for (Employee eachEmployee: employee) {
+            response.setEmail(eachEmployee.getEmail());
+            response.setInviteStatus(MemberInviteStatus.JOINED);
+            response.setProfilePicture(eachEmployee.getProfilePicture());
+            response.setName(eachEmployee.getFirstName() + " " + eachEmployee.getLastName());
+
+            responseList.add(response);
+        }
+        return responseList;
+    }
+
     protected static String generateToken(String companyId) {
         return JWT.create().withIssuedAt(Instant.now()).withExpiresAt(Instant.now().plusSeconds(86000L))
                 .withClaim("companyId", companyId)
                 .sign(Algorithm.HMAC512("secret".getBytes()));
     }
+
+
 
 }

@@ -34,7 +34,7 @@ public class EmployeeServiceTest {
 
     @Test
     public void employeeCanRegister_Test() throws REMAException {
-        ApiResponse<?> response = employeeService.registration(employeeRegistrationRequest);
+        ApiResponse<?> response = employeeService.registration(employeeRegistrationRequest, "");
         assertThat(response).isNotNull();
         assertThat(response.getMessage()).isEqualTo(EMPLOYEE_REGISTRATION_SUCCESSFUL);
     }

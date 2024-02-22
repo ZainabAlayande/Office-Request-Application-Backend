@@ -17,6 +17,7 @@ public class ORMAuthenticationManager implements AuthenticationManager {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+        System.out.println("Auth Manger");
         Authentication authenticationResult = null;
         if (authenticationProvider.supports(authentication.getClass())) {
             if (authenticationProvider.supports(authentication.getClass())) {
@@ -24,6 +25,7 @@ public class ORMAuthenticationManager implements AuthenticationManager {
                 return authenticationResult;
             } else throw new BadCredentialsException("Failed");
         }
+        System.out.println("Auth manager completed");
         return authenticationResult;
     }
 }

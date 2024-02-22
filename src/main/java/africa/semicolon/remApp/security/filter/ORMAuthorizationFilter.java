@@ -41,11 +41,16 @@ public class ORMAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         boolean isUnAuthorizedPath = EndPointsConstant.UNAUTHORIZED_ENDPOINTS.contains(request.getServletPath()) &&
                 request.getMethod().equals(HttpMethod.POST.name());
+        System.out.println(request.getServletPath());
+        System.out.println(isUnAuthorizedPath);
         if (isUnAuthorizedPath) {
+            System.out.println("Hello world 1");
             filterChain.doFilter(request, response);
+            System.out.println("Hello world done");
         }
         else  {
             try {
+                System.out.println("Hello word 2");
                 authorizeRequest(request, response, filterChain);
             } catch (ORMException exception) {
                 throw new RuntimeException(exception);

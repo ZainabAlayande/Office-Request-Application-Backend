@@ -3,20 +3,20 @@ package africa.semicolon.remApp.services.company;
 import africa.semicolon.remApp.dtos.requests.CompanyRegistrationRequest;
 import africa.semicolon.remApp.dtos.responses.ApiResponse;
 import africa.semicolon.remApp.dtos.responses.CompanyRegistrationResponse;
+import africa.semicolon.remApp.dtos.responses.EmployeeListResponse;
 import africa.semicolon.remApp.models.Company;
-import africa.semicolon.remApp.models.SuperAdmin;
+import africa.semicolon.remApp.models.Employee;
 import africa.semicolon.remApp.repositories.CompanyRepository;
-import africa.semicolon.remApp.repositories.SuperAdminRepository;
-import africa.semicolon.remApp.services.superAdmin.SuperAdminUtils;
 import lombok.AllArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static africa.semicolon.remApp.services.company.CompanyUtils.buildCompanyRegistrationResponse;
-import static africa.semicolon.remApp.services.company.CompanyUtils.generateToken;
+import static africa.semicolon.remApp.services.company.CompanyUtils.mapEmployeeToEmployeeResponse;
 
 @Service
 @AllArgsConstructor
@@ -32,9 +32,19 @@ public class CompanyServiceImpl implements CompanyService{
         Company mappedCompany = companyUtils.buildCompanyInformation(request);
         System.out.println("Mapped Company => " + mappedCompany);
         // add mail service
-        var anything = companyRepository.save(mappedCompany);
+        var savedCompany = companyRepository.save(mappedCompany);
         CompanyRegistrationResponse response = buildCompanyRegistrationResponse(mappedCompany);
-        return ApiResponse.builder().message("Successful").theEnum(anything.getRoles().toString()).status(true).data(response).build();
+        return ApiResponse.builder().message("Successful").theEnum(savedCompany.getRoles().toString()).status(true).data(response).build();
+    }
+
+    @Override
+    @Transactional
+    public void updateMemberCount(Company company, int increment) {
+        if (company != null) {
+            int newMemberCount = company.getMemberCount() + increment;
+            company.setMemberCount(newMemberCount);
+            companyRepository.save(company);
+        }
     }
 
     @Override
@@ -47,5 +57,18 @@ public class CompanyServiceImpl implements CompanyService{
         String replaceId = uniqueId.replaceAll("\"", "");
         System.out.println("Uni => " + replaceId);
         return companyRepository.findByUniqueID(replaceId);
+    }
+
+    @Override
+    public List<EmployeeListResponse> getCompanyEmployees(String companyId) {
+        Company company = companyRepository.findByUniqueID(companyId);
+        List<Employee> employees = company.getEmployee();
+        List<EmployeeListResponse> response = mapEmployeeToEmployeeResponse(employees);
+        return response;
+    }
+
+    @Override
+    public void saveCompany(Company company) {
+        companyRepository.save(company);
     }
 }

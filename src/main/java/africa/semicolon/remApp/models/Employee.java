@@ -1,5 +1,6 @@
 package africa.semicolon.remApp.models;
 
+import africa.semicolon.remApp.enums.MemberInviteStatus;
 import africa.semicolon.remApp.enums.Role;
 import jakarta.persistence.*;
 
@@ -20,6 +21,7 @@ import lombok.*;
 @RequiredArgsConstructor
 public class Employee {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -31,11 +33,17 @@ public class Employee {
     private String officeLine;
     private String position;
     private String profilePicture;
-    private String inviteStatus;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "invite_status", columnDefinition = "ENUM('PENDING', 'JOINED')")
+    private MemberInviteStatus inviteStatus;
+
     private LocalDateTime timeCreated;
+
+    @ManyToOne
+    private Company company;
 
     private List<Role> roles = new ArrayList<>();
 
-//    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-//    private BioData bioData;
+
 }

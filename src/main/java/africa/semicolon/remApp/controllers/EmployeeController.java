@@ -21,8 +21,9 @@ public class EmployeeController {
     private final EmployeeService employeeService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody EmployeeRegistrationRequest request) throws REMAException {
-        var response = employeeService.registration(request);
+    public ResponseEntity<?> register(@RequestBody EmployeeRegistrationRequest request, @RequestHeader("Authorization") String token) throws REMAException {
+        System.out.println("getting her for real");
+        var response = employeeService.registration(request, token);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

@@ -5,7 +5,6 @@ import africa.semicolon.remApp.dtos.responses.MakeRequestResponse;
 import africa.semicolon.remApp.dtos.responses.ApiResponse;
 import africa.semicolon.remApp.dtos.responses.ViewRequestResponse;
 import africa.semicolon.remApp.exception.ORMException;
-import africa.semicolon.remApp.models.BioData;
 import africa.semicolon.remApp.models.Employee;
 import africa.semicolon.remApp.models.Requests;
 import africa.semicolon.remApp.models.RequestStatus;

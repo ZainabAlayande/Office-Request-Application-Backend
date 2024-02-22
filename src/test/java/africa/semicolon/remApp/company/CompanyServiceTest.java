@@ -24,10 +24,6 @@ public class CompanyServiceTest {
         companyRegistrationRequest.setName("Coopera");
         companyRegistrationRequest.setConfirmPassword("2000");
         companyRegistrationRequest.setPassword("Coopera");
-        companyRegistrationRequest.setSuperAdminEmail("admin@gmail.com");
-        companyRegistrationRequest.setSuperAdminLastName("Last Name");
-        companyRegistrationRequest.setSuperAdminFirstName("First Name");
-        companyRegistrationRequest.setSuperAdminPassword("Password");
     }
 
     @Test

@@ -3,7 +3,8 @@ package africa.semicolon.remApp.services.admin;
 import africa.semicolon.remApp.dtos.requests.*;
 import africa.semicolon.remApp.dtos.responses.ApiResponse;
 import africa.semicolon.remApp.dtos.responses.InvitationLinkResponse;
-import africa.semicolon.remApp.exceptions.REMAException;
+import africa.semicolon.remApp.dtos.responses.Response;
+import africa.semicolon.remApp.enums.MemberInviteStatus;
 import africa.semicolon.remApp.models.Company;
 import africa.semicolon.remApp.models.Employee;
 import africa.semicolon.remApp.models.Requests;
@@ -15,30 +16,26 @@ import africa.semicolon.remApp.services.notification.MailService;
 import africa.semicolon.remApp.services.request.RequestService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import jakarta.servlet.ServletContext;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.core.Authentication;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.*;
 import java.time.Instant;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static africa.semicolon.remApp.services.admin.AdminUtils.*;
 import static africa.semicolon.remApp.utils.AppUtils.JWT_SECRET;
-import static africa.semicolon.remApp.utils.EmailUtils.MAIL_TEMPLATE_LOCATION;
 
 @Service
 @AllArgsConstructor
-public class remaAdminService implements AdminService{
+public class RemaAdminService implements AdminService{
 
-
+    private static final Logger logger = LoggerFactory.getLogger(RemaAdminService.class);
     private AdminRepository adminRepository;
     private final RequestService requestService;
     private final ModelMapper modelMapper;
@@ -48,25 +45,81 @@ public class remaAdminService implements AdminService{
     private final JwtUtil jwtUtil;
 
 
+//    @Override
+//    @Transactional
+//    public InvitationLinkResponse<?> generateInviteLinkForMember(List<String> email) {
+//        validateEmailAddressList(email);
+//        List<Object> list = new ArrayList<>();
+//        String uniqueID = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+//        System.out.println("the unique id => " + uniqueID);
+//        Company company = companyService.findByUniqueID(uniqueID);
+//        Employee employee = null;
+//        for (String emailAddress: email) {
+//            employee = new Employee();
+//            employee.setEmail(emailAddress);
+//            employee.setInviteStatus(MemberInviteStatus.PENDING.getName());
+//            employee.setProfilePicture("");
+//            employeeService.saveEmployee(employee);
+//            Response response = Response.builder().status(employee.getInviteStatus())
+//                    .profilePicture("").email(employee.getEmail()).build();
+//            list.add(response);
+//            company.getEmployee().add(employee);
+//        }
+//        companyService.saveCompany(company);
+//        String link = generateInvitationLink(uniqueID);
+//        EmailNotificationRequest emailNotificationRequest = buildEmailDetails(link, email, company.getName());
+//        mailService.sendMail(emailNotificationRequest);
+//       if (employee != null) {
+//           return InvitationLinkResponse.builder().data(list).message("Invite successfully sent")
+//                   .companyName(company.getName()).memberCount(Integer.parseInt(company.getMemberCount())).build();
+//       } else {
+//           return InvitationLinkResponse.builder().message("Invite failed")
+//                  .companyName("").memberCount(Integer.parseInt(company.getMemberCount())).build();
+//       }
+//    }
+
+
+
     @Override
     @Transactional
-    public InvitationLinkResponse generateInviteLinkForMember(String token, List<String> email, Authentication authentication) {
+    public InvitationLinkResponse<?> generateInviteLinkForMember(List<String> email) {
         validateEmailAddressList(email);
+
         String uniqueID = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+
+        logger.info("The unique id => {}", uniqueID);
         Company company = companyService.findByUniqueID(uniqueID);
         Employee employee = null;
-        for (String emailAddress: email) {
+        List<Object> list = new ArrayList<>();
+
+        for (String emailAddress : email) {
             employee = new Employee();
             employee.setEmail(emailAddress);
-            employee.setInviteStatus("PENDING");
-            employeeService.save(employee);
+            employee.setInviteStatus(MemberInviteStatus.PENDING);
+            employee.setProfilePicture("");
+            employeeService.saveEmployee(employee);
+
+            Response response = Response.builder().status(employee.getInviteStatus().getName()).profilePicture("")
+                    .email(employee.getEmail()).build();
+
+            list.add(response);
+            company.getEmployee().add(employee);
         }
+
+        companyService.saveCompany(company);
         String link = generateInvitationLink(uniqueID);
         EmailNotificationRequest emailNotificationRequest = buildEmailDetails(link, email, company.getName());
         mailService.sendMail(emailNotificationRequest);
-        assert employee != null;
-        return InvitationLinkResponse.builder().status(employee.getInviteStatus()).message("Invite successfully sent").build();
+
+        if (employee != null) {
+            return InvitationLinkResponse.builder().data(list).message("Invite successfully sent").companyName(company.getName())
+                    .memberCount(String.valueOf(company.getMemberCount())).build();
+        } else {
+            return InvitationLinkResponse.builder().message("Invite failed").companyName("")
+                    .memberCount(String.valueOf(company.getMemberCount())).build();
+        }
     }
+
 
     @SneakyThrows
     private EmailNotificationRequest buildEmailDetails(String link, List<String> email, String companyName) {

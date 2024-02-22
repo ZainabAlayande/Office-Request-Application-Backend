@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface AdminService {
 
-    InvitationLinkResponse generateInviteLinkForMember(String token, List<String> email, Authentication authentication);
+    InvitationLinkResponse generateInviteLinkForMember(List<String> email);
 
     ApiResponse<?> viewAllPendingRequestByCompanyId(String companyId);
 

@@ -1,6 +1,5 @@
 package africa.semicolon.remApp.config;
 
-import africa.semicolon.remApp.repositories.BioDataRepository;
 import africa.semicolon.remApp.repositories.EmployeeRepository;
 import africa.semicolon.remApp.security.JwtUtil;
 import africa.semicolon.remApp.services.company.CompanyUtils;
@@ -18,9 +17,6 @@ public class BeanConfig {
 
     @Autowired
     private EmployeeRepository employeeRepository;
-
-    @Autowired
-    private BioDataRepository bioDataRepository;
 
     @Bean
     public ModelMapper modelMapper() {
@@ -48,10 +44,8 @@ public class BeanConfig {
     }
 
     @Bean
-    public REMAEmployeeUtils employeeUtils(EmployeeRepository employeeRepository,
-                                           BioDataRepository bioDataRepository,
-                                           JwtUtil jwtUtil) {
-        return new REMAEmployeeUtils(employeeRepository, bioDataRepository, jwtUtil);
+    public REMAEmployeeUtils employeeUtils(EmployeeRepository employeeRepository, JwtUtil jwtUtil) {
+        return new REMAEmployeeUtils(employeeRepository, jwtUtil);
     }
 
 }

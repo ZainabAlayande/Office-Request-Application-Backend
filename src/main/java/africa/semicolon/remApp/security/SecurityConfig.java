@@ -1,8 +1,5 @@
 package africa.semicolon.remApp.security;
 
-import africa.semicolon.remApp.enums.Role;
-import africa.semicolon.remApp.repositories.BioDataRepository;
-import africa.semicolon.remApp.repositories.EmployeeRepository;
 import africa.semicolon.remApp.security.filter.ORMAuthenticationFilter;
 import africa.semicolon.remApp.security.filter.ORMAuthorizationFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;

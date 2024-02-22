@@ -1,10 +1,7 @@
 package africa.semicolon.remApp.models;
 
 import africa.semicolon.remApp.enums.Role;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -28,7 +25,12 @@ public class Company {
     private String email;
     private String password;
     private String confirmPassword;
+    private int memberCount;
     private LocalDateTime timeCreated;
     private List<Role> roles = new ArrayList<>();
+
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Employee> employee = new ArrayList<>();
+
 
 }

@@ -1,22 +1,17 @@
 package africa.semicolon.remApp.security.provider;
 
 import africa.semicolon.remApp.exceptions.REMAException;
-import africa.semicolon.remApp.security.user.CompanyDetails;
 import africa.semicolon.remApp.security.user.CompanyDetailsService;
 import africa.semicolon.remApp.security.user.EmployeeDetailsService;
 import africa.semicolon.remApp.services.company.CompanyService;
-import africa.semicolon.remApp.services.employee.EmployeeService;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -42,16 +37,20 @@ public class ORMAuthenticationProvider implements AuthenticationProvider {
         authenticationResult = authenticateIfAuthenticationIsACompany(email, password);
         System.out.println("auth result -> " + authenticationResult);
         if (authenticationResult == null) {
-                authenticationResult = authenticateIfAuthenticationIsAMember(email, password);
+                authenticationResult = authenticateIfAuthenticationIsAnEmployee(email, password);
         }
         return authenticationResult;
     }
 
 
-    private Authentication authenticateIfAuthenticationIsAMember(String principal, String password) throws REMAException {
+    private Authentication authenticateIfAuthenticationIsAnEmployee(String principal, String password) throws REMAException {
+        System.out.println("Auth provider employee");
         Authentication authenticationResult;
+        System.out.println("1");
         UserDetails userDetails = employeeService.loadUserByUsername(principal);
+        System.out.println("2");
         if (!(userDetails == null)) {
+            System.out.println("3");
             String memberUsername = userDetails.getUsername();
             String memberPassword = userDetails.getPassword();
             Collection<? extends  GrantedAuthority>  authorities = userDetails.getAuthorities();
@@ -62,10 +61,12 @@ public class ORMAuthenticationProvider implements AuthenticationProvider {
                 }
             }
         }
+        System.out.println("4");
         return null;
     }
 
     private Authentication authenticateIfAuthenticationIsACompany(String principal, String password) {
+        System.out.println("Auth provider company");
         Authentication authenticationResult = null;
         CompanyDetailsService companyDetailsService = new CompanyDetailsService(companyService);
         UserDetails userDetails = companyDetailsService.loadUserByUsername(principal);
@@ -79,6 +80,7 @@ public class ORMAuthenticationProvider implements AuthenticationProvider {
                     return authenticationResult;
                 }
             }}
+        System.out.println("Auth provider company finished");
         return null;
     }
 

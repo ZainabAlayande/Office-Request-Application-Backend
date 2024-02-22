@@ -27,9 +27,8 @@ public class AdminController {
             value = "/api/v1/generate-link",
             produces = {MediaType.APPLICATION_JSON_VALUE}
     )
-    public ResponseEntity<?> generateLink(@RequestHeader ("Authorization") String token, @RequestBody List<String> email)  {
-        System.out.println("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
-        var response = adminService.generateInviteLinkForMember(token, email, authentication);
+    public ResponseEntity<?> generateLink(@RequestBody List<String> email)  {
+        var response = adminService.generateInviteLinkForMember(email);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

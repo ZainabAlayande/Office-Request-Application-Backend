@@ -2,32 +2,30 @@ package africa.semicolon.remApp.services.employee;
 
 import africa.semicolon.remApp.dtos.requests.*;
 import africa.semicolon.remApp.dtos.responses.ApiResponse;
-import africa.semicolon.remApp.dtos.responses.CompleteRegistrationResponse;
+import africa.semicolon.remApp.enums.MemberInviteStatus;
 import africa.semicolon.remApp.enums.Role;
 import africa.semicolon.remApp.exceptions.EmployeeRegistrationFailedException;
 import africa.semicolon.remApp.exceptions.REMAException;
-import africa.semicolon.remApp.models.BioData;
+import africa.semicolon.remApp.models.Company;
 import africa.semicolon.remApp.models.Employee;
-import africa.semicolon.remApp.repositories.BioDataRepository;
 import africa.semicolon.remApp.repositories.EmployeeRepository;
 import africa.semicolon.remApp.security.JwtUtil;
+import africa.semicolon.remApp.services.company.CompanyService;
 import africa.semicolon.remApp.services.notification.MailService;
-import com.auth0.jwt.interfaces.DecodedJWT;
+import com.auth0.jwt.interfaces.Claim;
 import lombok.AllArgsConstructor;
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static africa.semicolon.remApp.services.employee.REMAEmployeeUtils.*;
-import static africa.semicolon.remApp.services.request.RequestServiceUtils.buildEmployee;
 import static africa.semicolon.remApp.utils.AcceptedResponseUtils.EMPLOYEE_REGISTRATION_SUCCESSFUL;
 import static africa.semicolon.remApp.utils.FailedResponseUtils.EMPLOYEE_REGISTRATION_FAILED;
 
@@ -36,7 +34,7 @@ import static africa.semicolon.remApp.utils.FailedResponseUtils.EMPLOYEE_REGISTR
 @Slf4j
 public class REMAEmployeeService implements EmployeeService{
     private final EmployeeRepository employeeRepository;
-    private final BioDataRepository bioDataRepository;
+    private CompanyService companyService;
     private REMAEmployeeUtils employeeUtils;
     private final MailService mailService;
     private final ModelMapper modelMapper;
@@ -45,18 +43,38 @@ public class REMAEmployeeService implements EmployeeService{
 
     @Override
     @Transactional
-    public ApiResponse<?> registration(EmployeeRegistrationRequest request) throws REMAException {
-        validateEmail(request.getEmail());
-        Employee employee = Employee.builder().lastName(request.getLastName()).firstName(request.getFirstName())
-                .email(request.getEmail()).password(passwordEncoder.encode(request.getPassword())).roles(List.of(Role.EMPLOYEE)).timeCreated(LocalDateTime.now()).build();
+    public ApiResponse<?> registration(EmployeeRegistrationRequest request, String token) throws REMAException {
+//        validateEmail(request.getEmail());
+        System.out.println("token => " + token);
 
-        Employee savedEmployee = employeeRepository.save(employee);
-//        EmailNotificationRequest emailNotificationRequest = employeeUtils.buildEmailRequest(request.getEmail());
-//        var response = mailService.sendMail(emailNotificationRequest);
-//        log.info("response-->{}", response);
+        Map<String, Claim> claim = jwtUtil.extractClaimsFromToken(token);
+        String companyId = claim.get("companyId").asString();
 
-        if (savedEmployee.getId() == null)
+        Optional<Employee> employeeOptional = Optional.ofNullable(employeeRepository
+                .findByEmail(request.getEmail())
+                .orElseThrow(() -> new REMAException("Employee not found with email: " + request.getEmail())));
+
+        Employee foundEmployee = employeeOptional.get();
+        foundEmployee.setFirstName(request.getFirstName());
+        foundEmployee.setLastName(request.getLastName());
+        foundEmployee.setPassword(request.getPassword());
+        foundEmployee.setTimeCreated(LocalDateTime.now());
+        foundEmployee.setInviteStatus(MemberInviteStatus.JOINED);
+        foundEmployee.getRoles().add(Role.EMPLOYEE);
+
+        Company company = companyService.findByUniqueID(companyId);
+        company.getEmployee().add(foundEmployee);
+        companyService.updateMemberCount(company, 1);
+
+        employeeRepository.save(foundEmployee);
+
+        EmailNotificationRequest emailNotificationRequest = employeeUtils.buildEmailRequest(request.getEmail());
+        var response = mailService.sendMail(emailNotificationRequest);
+        log.info("Mail service response: {}", response);
+
+        if (foundEmployee.getId() == null) {
             throw new EmployeeRegistrationFailedException(String.format(EMPLOYEE_REGISTRATION_FAILED, request.getEmail()));
+        }
         return ApiResponse.builder().message(EMPLOYEE_REGISTRATION_SUCCESSFUL).status(true).build();
     }
 
@@ -74,13 +92,11 @@ public class REMAEmployeeService implements EmployeeService{
 
     @Override
     public Employee findEmployeeByEmail(String email) throws REMAException {
-        BioData bioData = new BioData();
-        bioData.setOfficeEmailAddress(email);
         return employeeRepository.findByEmail(email).orElseThrow(() -> new REMAException("Employee not found"));
-    }
+  }
 
     @Override
-    public void save(Employee employee) {
+    public void saveEmployee(Employee employee) {
         employeeRepository.save(employee);
     }
 
