@@ -2,28 +2,38 @@ package africa.semicolon.remApp.services.admin;
 
 import africa.semicolon.remApp.exception.ORMException;
 import africa.semicolon.remApp.exceptions.REMAException;
+import africa.semicolon.remApp.models.Company;
+import africa.semicolon.remApp.models.Employee;
+import africa.semicolon.remApp.services.company.CompanyService;
+import africa.semicolon.remApp.services.employee.EmployeeService;
+import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+@AllArgsConstructor
 public class AdminUtils {
 
+    private static EmployeeService employeeService;
+    private static CompanyService companyService;
     private static final String EMAIL_REGEX_PATTERN =
             "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
 
     private static final Pattern pattern = Pattern.compile(EMAIL_REGEX_PATTERN);
 
-    public static void validateEmailAddressList(List<String> email) {
+    @SneakyThrows
+    public static void validateEmailAddressList(List<String> email, String companyUniqueId) {
         List<String> invalidEmails = new ArrayList<>();
+        if (email.isEmpty()) throw new REMAException("Email is empty");
         for (String singleEmail : email) {
+            validateEmailDoesntExistWithCompany(singleEmail, companyUniqueId);
             Matcher matcher = pattern.matcher(singleEmail.trim());
                 if (!matcher.matches()) {
                     invalidEmails.add(singleEmail);
@@ -33,6 +43,26 @@ public class AdminUtils {
         if (!invalidEmails.isEmpty()) {
             throw new ORMException("Invalid Email Address: " + String.join(", ", invalidEmails));
         }
+    }
+
+    @SneakyThrows
+    private static void validateEmailDoesntExistWithCompany(String singleEmail, String companyUniqueId) {
+        List<String> existingEmails = new ArrayList<>();
+//        boolean isPresent = false;
+        Company company = companyService.findByUniqueID(companyUniqueId);
+        List<Employee> employees = company.getEmployee();
+        for (Employee employee: employees) {
+            if (employee.getEmail().equals(singleEmail));
+//            isPresent = true;
+            existingEmails.add(singleEmail);
+        }
+
+        if (!existingEmails.isEmpty()) {
+            throw new ORMException("Email address exist: " + String.join(", ", existingEmails));
+        }
+//        if (!isPresent) {
+//            throw new REMAException(String.format("%s already exist", singleEmail));
+//        }
     }
 
     public static String extractToken(String tokenWithPrefix) {

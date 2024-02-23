@@ -5,6 +5,7 @@ import africa.semicolon.remApp.dtos.requests.Recipient;
 import africa.semicolon.remApp.dtos.requests.Sender;
 import africa.semicolon.remApp.dtos.responses.CompleteRegistrationResponse;
 import africa.semicolon.remApp.dtos.responses.EmployeeRegisterResponse;
+import africa.semicolon.remApp.dtos.responses.Response;
 import africa.semicolon.remApp.exceptions.EmployeeRegistrationFailedException;
 import africa.semicolon.remApp.exceptions.REMAException;
 import africa.semicolon.remApp.models.Employee;
@@ -16,6 +17,7 @@ import lombok.SneakyThrows;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Random;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -94,6 +96,36 @@ public class REMAEmployeeUtils {
             throw new EmployeeRegistrationFailedException("Invalid email address");
         }
 
+    }
+
+
+    public static String employeeUniqueID(String name) {
+        String firstThreeLetter = employeeFirstThreeLetter(name);
+        return firstThreeLetter + "/" + generateRandomNumber();
+    }
+
+    private static String generateRandomNumber() {
+        String part1 = String.valueOf(generateThreeDigitNumber());
+        String part2 = String.valueOf(generateThreeDigitNumber());
+        return part1 + "/" + part2;
+    }
+
+    private static int generateThreeDigitNumber() {
+        Random random = new Random();
+        return random.nextInt(900) + 100;
+    }
+
+    private static String employeeFirstThreeLetter(String name) {
+        if (name != null && name.length() >= 3)
+            return name.substring(0, 3).toUpperCase();
+        else throw new RuntimeException("Invalid.........");
+    }
+
+    public static Response mapEmployeeListToResponse(Employee foundEmployee) {
+        return Response.builder()
+                .email(foundEmployee.getEmail())
+                .status(foundEmployee.getInviteStatus().getName())
+                .profilePicture(foundEmployee.getProfilePicture()).build();
     }
 
 }

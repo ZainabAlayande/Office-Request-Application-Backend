@@ -2,6 +2,7 @@ package africa.semicolon.remApp.services.employee;
 
 import africa.semicolon.remApp.dtos.requests.*;
 import africa.semicolon.remApp.dtos.responses.ApiResponse;
+import africa.semicolon.remApp.dtos.responses.Response;
 import africa.semicolon.remApp.enums.MemberInviteStatus;
 import africa.semicolon.remApp.enums.Role;
 import africa.semicolon.remApp.exceptions.EmployeeRegistrationFailedException;
@@ -14,13 +15,16 @@ import africa.semicolon.remApp.services.company.CompanyService;
 import africa.semicolon.remApp.services.notification.MailService;
 import com.auth0.jwt.interfaces.Claim;
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -44,7 +48,7 @@ public class REMAEmployeeService implements EmployeeService{
     @Override
     @Transactional
     public ApiResponse<?> registration(EmployeeRegistrationRequest request, String token) throws REMAException {
-//        validateEmail(request.getEmail());
+        validateEmail(request.getEmail());
         System.out.println("token => " + token);
 
         Map<String, Claim> claim = jwtUtil.extractClaimsFromToken(token);
@@ -76,6 +80,24 @@ public class REMAEmployeeService implements EmployeeService{
             throw new EmployeeRegistrationFailedException(String.format(EMPLOYEE_REGISTRATION_FAILED, request.getEmail()));
         }
         return ApiResponse.builder().message(EMPLOYEE_REGISTRATION_SUCCESSFUL).status(true).build();
+    }
+
+    @SneakyThrows
+    @Override
+    public List<Response> retrieveEmployeeInformation() {
+        List<Response> responseList = new ArrayList<>();
+        String companyId = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        Company company = companyService.findByUniqueID(companyId);
+        if (company != null) {
+            List<Employee> foundEmployee = company.getEmployee();
+            for (Employee employee: foundEmployee) {
+                Response response = mapEmployeeListToResponse(employee);
+                responseList.add(response);
+            }
+        } else {
+            throw new REMAException("Company not found");
+        }
+        return responseList;
     }
 
 

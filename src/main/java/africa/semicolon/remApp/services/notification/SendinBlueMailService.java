@@ -32,9 +32,6 @@ public class SendinBlueMailService implements MailService {
         httpHeaders.set("accept", APPLICATION_JSON_VALUE);
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-        System.out.println(mailConfig.getMailApiKey());
-        System.out.println(emailNotificationRequest.toString());
-
         RequestEntity<EmailNotificationRequest> emailNotificationRequestEntity
                 = new RequestEntity<>(emailNotificationRequest, httpHeaders, HttpMethod.POST, URI.create(EMAIL_URL));
         System.out.println("here 1");

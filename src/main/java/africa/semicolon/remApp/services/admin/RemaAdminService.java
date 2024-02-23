@@ -29,6 +29,7 @@ import java.time.Instant;
 import java.util.*;
 
 import static africa.semicolon.remApp.services.admin.AdminUtils.*;
+import static africa.semicolon.remApp.services.employee.REMAEmployeeUtils.employeeUniqueID;
 import static africa.semicolon.remApp.utils.AppUtils.JWT_SECRET;
 
 @Service
@@ -45,48 +46,11 @@ public class RemaAdminService implements AdminService{
     private final JwtUtil jwtUtil;
 
 
-//    @Override
-//    @Transactional
-//    public InvitationLinkResponse<?> generateInviteLinkForMember(List<String> email) {
-//        validateEmailAddressList(email);
-//        List<Object> list = new ArrayList<>();
-//        String uniqueID = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-//        System.out.println("the unique id => " + uniqueID);
-//        Company company = companyService.findByUniqueID(uniqueID);
-//        Employee employee = null;
-//        for (String emailAddress: email) {
-//            employee = new Employee();
-//            employee.setEmail(emailAddress);
-//            employee.setInviteStatus(MemberInviteStatus.PENDING.getName());
-//            employee.setProfilePicture("");
-//            employeeService.saveEmployee(employee);
-//            Response response = Response.builder().status(employee.getInviteStatus())
-//                    .profilePicture("").email(employee.getEmail()).build();
-//            list.add(response);
-//            company.getEmployee().add(employee);
-//        }
-//        companyService.saveCompany(company);
-//        String link = generateInvitationLink(uniqueID);
-//        EmailNotificationRequest emailNotificationRequest = buildEmailDetails(link, email, company.getName());
-//        mailService.sendMail(emailNotificationRequest);
-//       if (employee != null) {
-//           return InvitationLinkResponse.builder().data(list).message("Invite successfully sent")
-//                   .companyName(company.getName()).memberCount(Integer.parseInt(company.getMemberCount())).build();
-//       } else {
-//           return InvitationLinkResponse.builder().message("Invite failed")
-//                  .companyName("").memberCount(Integer.parseInt(company.getMemberCount())).build();
-//       }
-//    }
-
-
-
     @Override
     @Transactional
     public InvitationLinkResponse<?> generateInviteLinkForMember(List<String> email) {
-        validateEmailAddressList(email);
-
         String uniqueID = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-
+        validateEmailAddressList(email, uniqueID);
         logger.info("The unique id => {}", uniqueID);
         Company company = companyService.findByUniqueID(uniqueID);
         Employee employee = null;
@@ -97,6 +61,7 @@ public class RemaAdminService implements AdminService{
             employee.setEmail(emailAddress);
             employee.setInviteStatus(MemberInviteStatus.PENDING);
             employee.setProfilePicture("");
+            employee.setUniqueId(employeeUniqueID(emailAddress));
             employeeService.saveEmployee(employee);
 
             Response response = Response.builder().status(employee.getInviteStatus().getName()).profilePicture("")
@@ -104,12 +69,13 @@ public class RemaAdminService implements AdminService{
 
             list.add(response);
             company.getEmployee().add(employee);
+
+            String link = generateInvitationLink(uniqueID, employee.getUniqueId());
+            EmailNotificationRequest emailNotificationRequest = buildEmailDetails(link, emailAddress, company.getName());
+            mailService.sendMail(emailNotificationRequest);
         }
 
         companyService.saveCompany(company);
-        String link = generateInvitationLink(uniqueID);
-        EmailNotificationRequest emailNotificationRequest = buildEmailDetails(link, email, company.getName());
-        mailService.sendMail(emailNotificationRequest);
 
         if (employee != null) {
             return InvitationLinkResponse.builder().data(list).message("Invite successfully sent").companyName(company.getName())
@@ -139,9 +105,24 @@ public class RemaAdminService implements AdminService{
                 .build();
     }
 
-    private String generateInvitationLink(String companyId) {
+    @SneakyThrows
+    private EmailNotificationRequest buildEmailDetails(String link, String email, String companyName) {
+        String name = extractNameFromEmail(email);
+        Recipient recipient = new Recipient(email, name);
+        Sender sender = new Sender("Office Flow", "theofficeflow@gmail.com");
+        String emailContent = getEmailTemplate(link, companyName);
+        return EmailNotificationRequest.builder()
+                .emailSender(sender)
+                .content(emailContent)
+                .recipient(Set.of(recipient))
+                .subject("INVITATION TO JOIN OFFICE FLOW")
+                .build();
+    }
+
+    private String generateInvitationLink(String companyId,  String employeeId) {
         return "localhost:5173/employee-registration?token=" + JWT.create()
                 .withClaim("companyId", companyId)
+                .withClaim("employeeId", employeeId)
                 .withExpiresAt(Instant.now().plusSeconds(864000L))
                 .sign(Algorithm.HMAC512(JWT_SECRET.getBytes()));
     }
